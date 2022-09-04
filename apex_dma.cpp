@@ -8,7 +8,7 @@
 #include <cfloat>
 #include "Game.h"
 #include <thread>
-//this is a test
+//this is a test, with seconds
 Memory apex_mem;
 Memory client_mem;
 
