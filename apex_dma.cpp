@@ -51,7 +51,7 @@ bool vars_t = false;
 bool item_t = false;
 uint64_t g_Base;
 uint64_t c_Base;
-bool next = false;
+bool next2 = false;
 bool valid = false;
 bool lock = false;
 
@@ -327,8 +327,8 @@ static void EspLoop()
 				apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
 				if (LocalPlayer == 0)
 				{
-					next = true;
-					while(next && g_Base!=0 && c_Base!=0 && esp)
+					next2 = true;
+					while(next2 && g_Base!=0 && c_Base!=0 && esp)
 					{
 						std::this_thread::sleep_for(std::chrono::milliseconds(1));
 					}
@@ -338,8 +338,8 @@ static void EspLoop()
 				int team_player = LPlayer.getTeamId();
 				if (team_player < 0 || team_player>50)
 				{
-					next = true;
-					while(next && g_Base!=0 && c_Base!=0 && esp)
+					next2 = true;
+					while(next2 && g_Base!=0 && c_Base!=0 && esp)
 					{
 						std::this_thread::sleep_for(std::chrono::milliseconds(1));
 					}
@@ -511,8 +511,8 @@ static void EspLoop()
 					}
 				}
 
-				next = true;
-				while(next && g_Base!=0 && c_Base!=0 && esp)
+				next2 = true;
+				while(next2 && g_Base!=0 && c_Base!=0 && esp)
 				{
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				}
@@ -574,8 +574,8 @@ static void set_vars(uint64_t add_addr)
 	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*3, aiming_addr);
 	uint64_t g_Base_addr = 0;
 	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*4, g_Base_addr);
-	uint64_t next_addr = 0;
-	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*5, next_addr);
+	uint64_t next2_addr = 0;
+	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*5, next2_addr);
 	uint64_t player_addr = 0;
 	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*6, player_addr);
 	uint64_t valid_addr = 0;
@@ -663,21 +663,21 @@ static void set_vars(uint64_t add_addr)
 			client_mem.Read<int>(glowtype_addr, glowtype);
 			client_mem.Read<int>(glowtype2_addr, glowtype2);
 
-			if(esp && next)
+			if(esp && next2)
 			{
 				if(valid)
 					client_mem.WriteArray<player>(player_addr, players, toRead);
 				client_mem.Write<bool>(valid_addr, valid);
-				client_mem.Write<bool>(next_addr, true); //next
+				client_mem.Write<bool>(next2_addr, true); //next2
 
-				bool next_val = false;
+				bool next2_val = false;
 				do
 				{
-					client_mem.Read<bool>(next_addr, next_val);
+					client_mem.Read<bool>(next2_addr, next2_val);
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));
-				} while (next_val && g_Base!=0 && c_Base!=0);
+				} while (next2_val && g_Base!=0 && c_Base!=0);
 				
-				next = false;
+				next2 = false;
 			}
 		}
 	}
@@ -755,7 +755,7 @@ int main(int argc, char *argv[])
 	//const char* ap_proc = "EasyAntiCheat_launcher.exe";
 
 	//Client "add" offset
-	uint64_t add_off = 0x1205e0;
+	uint64_t add_off = 0x1205f0;
 
 	std::thread aimbot_thr;
 	std::thread esp_thr;
