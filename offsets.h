@@ -1,6 +1,8 @@
 
 #define VERSION STEAM
 //v3.0.10.29
+//GameVersion=v3.0.11.32
+
 #if VERSION == STEAM
 
 #define OFFSET_ENTITYLIST 0x1a75038 //cl_entitylist
@@ -25,7 +27,7 @@
 #define OFFSET_LIFE_STATE 0x798 //m_lifeState, >0 = dead
 #define OFFSET_BLEED_OUT_STATE 0x2688 //m_bleedoutState, >0 = knocked
 
-#define OFFSET_ORIGIN 0x014c //m_vecAbsOrigin
+#define OFFSET_ORIGIN 0x014c //m_vecAbsOrigin - 3rd offset after the first int and vector
 
 
 #define OFFSET_BONES 0x0e88 + 0x48 //m_nForceBone + 0x48
@@ -46,7 +48,7 @@
 #define OFFSET_BULLET_SPEED 0x1eb8 //CWeaponX!m_flProjectileSpeed
 #define OFFSET_BULLET_SCALE 0x1ec0 //CWeaponX!m_flProjectileScale
 #define OFFSET_ZOOM_FOV 0x1698 + 0xb8 //m_playerData + m_curZoomFOV
-#define OFFSET_AMMO 0x1624 //m_ammoInClip
+#define OFFSET_AMMO 0x1624 //m_ammoInClip first offset 
 
 #define OFFSET_ITEM_GLOW 0x2c0 //m_highlightFunctionBits
 
