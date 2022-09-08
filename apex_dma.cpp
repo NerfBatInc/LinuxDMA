@@ -71,16 +71,13 @@ typedef struct player
 	int shield = 0;
 	int maxshield = 0;
 	int armortype = 0;
+	Vector EntityPosition;
+	Vector LocalPlayerPosition;
+	QAngle localviewangle;
 	char name[33] = { 0 };
 }player;
 
-typedef struct radarplayer
-{
-		Vector EntityPosition;
-		Vector LocalPlayerPosition;
-		float localyaw;
-	
-}radarplayer;
+
 
 struct Matrix
 {
@@ -317,7 +314,7 @@ void DoActions()
 // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 player players[toRead];
-radarplayer radarplayers[toRead];
+
 
 static void EspLoop()
 {
@@ -366,7 +363,7 @@ static void EspLoop()
 				uint64_t entitylist = g_Base + OFFSET_ENTITYLIST;
 				
 				memset(players,0,sizeof(players));
-				memset(radarplayers,0,sizeof(radarplayers));
+
 				if(firing_range)
 				{
 					int c=0;
@@ -399,6 +396,7 @@ static void EspLoop()
 
 						Vector EntityPosition = Target.getPosition();
 						float dist = LocalPlayerPosition.DistTo(EntityPosition);
+
 						if (dist > max_dist || dist < 50.0f)
 						{	
 							continue;
@@ -434,6 +432,7 @@ static void EspLoop()
 								shield,
 								maxshield,
 								armortype
+								
 							};
 							Target.get_name(g_Base, i-1, &players[c].name[0]);
 							lastvis_esp[c] = Target.lastVisTime();
@@ -497,6 +496,9 @@ static void EspLoop()
 							int shield = Target.getShield();
 							int maxshield = Target.getMaxshield();
 							int armortype = Target.getArmortype();
+							Vector EntityPosition = Target.getPosition();
+							Vector LocalPlayerPosition = LPlayer.getPosition();
+							QAngle localviewangle = LPlayer.GetViewAngles();
 							players[i] = 
 							{
 								dist,
@@ -512,7 +514,10 @@ static void EspLoop()
 								health,
 								shield,
 								maxshield,
-								armortype
+								armortype,
+								EntityPosition,
+								LocalPlayerPosition,
+								localviewangle
 							};
 							Target.get_name(g_Base, i-1, &players[i].name[0]);
 							lastvis_esp[i] = Target.lastVisTime();
@@ -652,8 +657,6 @@ static void set_vars(uint64_t add_addr)
 			client_mem.Write<uint64_t>(g_Base_addr, g_Base);
 			client_mem.Write<int>(spectators_addr, spectators);
 			client_mem.Write<int>(allied_spectators_addr, allied_spectators);
-			//client_mem.Write<WriteArray><radarplayer>(EntityPosition, LocalPlayerPosition, localyaw);
-
 			client_mem.Read<int>(aim_addr, aim);
 			client_mem.Read<bool>(esp_addr, esp);
 			client_mem.Read<bool>(aiming_addr, aiming);
@@ -766,7 +769,7 @@ int main(int argc, char *argv[])
 	//const char* ap_proc = "EasyAntiCheat_launcher.exe";
 
 	//Client "add" offset
-	uint64_t add_off = 0x128950;
+	uint64_t add_off = 0x128940;
 
 	std::thread aimbot_thr;
 	std::thread esp_thr;
