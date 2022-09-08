@@ -74,6 +74,14 @@ typedef struct player
 	char name[33] = { 0 };
 }player;
 
+typedef struct radarplayer
+{
+		Vector EntityPosition;
+		Vector LocalPlayerPosition;
+		float localyaw;
+	
+}radarplayer;
+
 struct Matrix
 {
 	float matrix[16];
@@ -309,6 +317,7 @@ void DoActions()
 // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 player players[toRead];
+radarplayer radarplayers[toRead];
 
 static void EspLoop()
 {
@@ -357,6 +366,7 @@ static void EspLoop()
 				uint64_t entitylist = g_Base + OFFSET_ENTITYLIST;
 				
 				memset(players,0,sizeof(players));
+				memset(radarplayers,0,sizeof(radarplayers));
 				if(firing_range)
 				{
 					int c=0;
@@ -642,6 +652,7 @@ static void set_vars(uint64_t add_addr)
 			client_mem.Write<uint64_t>(g_Base_addr, g_Base);
 			client_mem.Write<int>(spectators_addr, spectators);
 			client_mem.Write<int>(allied_spectators_addr, allied_spectators);
+			//client_mem.Write<WriteArray><radarplayer>(EntityPosition, LocalPlayerPosition, localyaw);
 
 			client_mem.Read<int>(aim_addr, aim);
 			client_mem.Read<bool>(esp_addr, esp);
@@ -666,7 +677,7 @@ static void set_vars(uint64_t add_addr)
 			if(esp && next2)
 			{
 				if(valid)
-					client_mem.WriteArray<player>(player_addr, players, toRead);
+				client_mem.WriteArray<player>(player_addr, players, toRead);
 				client_mem.Write<bool>(valid_addr, valid);
 				client_mem.Write<bool>(next2_addr, true); //next2
 
@@ -755,7 +766,7 @@ int main(int argc, char *argv[])
 	//const char* ap_proc = "EasyAntiCheat_launcher.exe";
 
 	//Client "add" offset
-	uint64_t add_off = 0x126920;
+	uint64_t add_off = 0x128950;
 
 	std::thread aimbot_thr;
 	std::thread esp_thr;
