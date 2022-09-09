@@ -404,7 +404,7 @@ static void EspLoop()
 						
 						Vector bs = Vector();
 						WorldToScreen(EntityPosition, m.matrix, 1920, 1080, bs);
-						if (bs.x > 0 && bs.y > 0)
+						if (esp)
 						{
 							Vector hs = Vector();
 							Vector HeadPosition = Target.getBonePositionByHitbox(0);
@@ -484,7 +484,7 @@ static void EspLoop()
 
 						Vector bs = Vector();
 						WorldToScreen(EntityPosition, m.matrix, 1920, 1080, bs);
-						if (bs.x > 0 && bs.y > 0)
+						if (esp)
 						{
 							Vector hs = Vector();
 							Vector HeadPosition = Target.getBonePositionByHitbox(0);
