@@ -698,8 +698,6 @@ static void set_vars(uint64_t add_addr)
 	vars_t = false;
 }
 
-
- 
 // GlowMode struct
 struct GlowMode {
 	int8_t GeneralGlowMode, BorderGlowMode, BorderSize, TransparentLevel;
@@ -718,39 +716,37 @@ static void item_glow_t()
 			uint64_t entitylist = g_Base + OFFSET_ENTITYLIST;
 			if (item_glow)
 			{
-				for (int i = 0; i < 14000; i++)
+				for (int i = 0; i < 20000; i++)
 				{
 					uint64_t centity = 0;
 					apex_mem.Read<uint64_t>(entitylist + ((uint64_t)i << 5), centity);
 					if (centity == 0) continue;
 					Item item = getItem(centity);
  
-					if (item.isItem())
+ 
+					if (item.isBox())
 					{
-						apex_mem.Write<int>(centity + OFFSET_GLOW_ENABLE, 1);
-						apex_mem.Write<int>(centity + OFFSET_GLOW_THROUGH_WALLS, 1); // 1 = far, 2 = close
-						apex_mem.Write<GlowMode>(centity + 0x2C4, { 101,101,99,90 });
- 
-						apex_mem.Write<float>(centity + 0x1D0, 50.0f); // r
-						apex_mem.Write<float>(centity + 0x1D4, 50.0f); // g
-						apex_mem.Write<float>(centity + 0x1D8, 50.0f); // b
- 
-						char glowName[11] = { 0 };
-						uint64_t name_ptr;
-						apex_mem.Read<uint64_t>(centity + 0x30, name_ptr);
-						apex_mem.ReadArray<char>(name_ptr, glowName, 11);
+						apex_mem.Write<int>(centity + 0x262, 16256);
+						apex_mem.Write<int>(centity + 0x2dc, 1193322764);
+						apex_mem.Write<int>(centity + 0x3c8, 7);
+						apex_mem.Write<int>(centity + 0x3d0, 2);
 						
-						printf("%s\n", glowName);
 					}
+					
+					if(item.isItem() && !item.isGlowing())
+					{
+						item.enableGlow();
+					}
+					
 				}
 				k=1;
-				std::this_thread::sleep_for(std::chrono::milliseconds(600));
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}
 			else
 			{		
 				if(k==1)
 				{
-					for (int i = 0; i < 14000; i++)
+					for (int i = 0; i < 20000; i++)
 					{
 						uint64_t centity = 0;
 						apex_mem.Read<uint64_t>(entitylist + ((uint64_t)i << 5), centity);

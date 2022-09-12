@@ -262,6 +262,14 @@ bool Item::isItem()
 	return strncmp(class_name, "CPropSurvival", 13) == 0;
 }
 
+bool Item::isBox()
+{
+	char class_name[33] = {};
+	get_class_name(ptr, class_name);
+
+	return strncmp(class_name, "CDeathBoxProp", 13) == 0;
+}
+
 bool Item::isGlowing()
 {
 	return *(int*)(buffer + OFFSET_ITEM_GLOW) == 1363184265;
@@ -387,6 +395,7 @@ Item getItem(uintptr_t ptr)
 	apex_mem.ReadArray<uint8_t>(ptr, entity.buffer, sizeof(entity.buffer));
 	return entity;
 }
+
 
 bool WorldToScreen(Vector from, float* m_vMatrix, int targetWidth, int targetHeight, Vector& to)
 {
