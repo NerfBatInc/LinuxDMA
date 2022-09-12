@@ -698,6 +698,13 @@ static void set_vars(uint64_t add_addr)
 	vars_t = false;
 }
 
+
+ 
+// GlowMode struct
+struct GlowMode {
+	int8_t GeneralGlowMode, BorderGlowMode, BorderSize, TransparentLevel;
+};
+ 
 static void item_glow_t()
 {
 	item_t = true;
@@ -711,21 +718,29 @@ static void item_glow_t()
 			uint64_t entitylist = g_Base + OFFSET_ENTITYLIST;
 			if (item_glow)
 			{
-				for (int i = 0; i < 10000; i++)
+				for (int i = 0; i < 14000; i++)
 				{
 					uint64_t centity = 0;
 					apex_mem.Read<uint64_t>(entitylist + ((uint64_t)i << 5), centity);
 					if (centity == 0) continue;
 					Item item = getItem(centity);
-
-					if(item.isItem() && !item.isGlowing())
+ 
+					if (item.isItem())
 					{
-						item.enableGlow();
-					}
-					
-					if(item.isBox() && !item.isGlowing())
-					{
-						item.enableGlow();
+						apex_mem.Write<int>(centity + OFFSET_GLOW_ENABLE, 1);
+						apex_mem.Write<int>(centity + OFFSET_GLOW_THROUGH_WALLS, 1); // 1 = far, 2 = close
+						apex_mem.Write<GlowMode>(centity + 0x2C4, { 101,101,99,90 });
+ 
+						apex_mem.Write<float>(centity + 0x1D0, 50.0f); // r
+						apex_mem.Write<float>(centity + 0x1D4, 50.0f); // g
+						apex_mem.Write<float>(centity + 0x1D8, 50.0f); // b
+ 
+						char glowName[11] = { 0 };
+						uint64_t name_ptr;
+						apex_mem.Read<uint64_t>(centity + 0x30, name_ptr);
+						apex_mem.ReadArray<char>(name_ptr, glowName, 11);
+						
+						printf("%s\n", glowName);
 					}
 				}
 				k=1;
@@ -735,14 +750,14 @@ static void item_glow_t()
 			{		
 				if(k==1)
 				{
-					for (int i = 0; i < 10000; i++)
+					for (int i = 0; i < 14000; i++)
 					{
 						uint64_t centity = 0;
 						apex_mem.Read<uint64_t>(entitylist + ((uint64_t)i << 5), centity);
 						if (centity == 0) continue;
-
+ 
 						Item item = getItem(centity);
-
+ 
 						if(item.isItem() && item.isGlowing())
 						{
 							item.disableGlow();
@@ -755,6 +770,7 @@ static void item_glow_t()
 	}
 	item_t = false;
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -769,7 +785,7 @@ int main(int argc, char *argv[])
 	//const char* ap_proc = "EasyAntiCheat_launcher.exe";
 
 	//Client "add" offset
-	uint64_t add_off = 0x129960;
+	uint64_t add_off = 0x129980;
 
 	std::thread aimbot_thr;
 	std::thread esp_thr;

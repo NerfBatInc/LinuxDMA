@@ -58,9 +58,7 @@ public:
 	uint8_t buffer[0x3FF0];
 	Vector getPosition();
 	bool isItem();
-	bool isBox();
 	bool isGlowing();
-	
 	void enableGlow();
 	void disableGlow();
 };
